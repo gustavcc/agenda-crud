@@ -1,3 +1,5 @@
+CRIAR VENV SEMPRE QIE INICIAR
+
 fazer GUI com tkinter
 
 inserir dados
