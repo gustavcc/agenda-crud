@@ -1,0 +1,9 @@
+fazer GUI com tkinter
+
+inserir dados
+
+atualizar dados
+
+deletar dados
+
+mostrar dadods no TreeView

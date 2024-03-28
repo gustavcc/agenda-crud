@@ -1,3 +1,1 @@
-from tkinter import *
-from customtkinter import *
-
+print('ola mundo')
