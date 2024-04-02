@@ -2,7 +2,7 @@ import sqlite3
 from colorama import Fore
 
 #*----- cennection .db -----*#
-class AgendaConn():
+class CoonectAgenda():
     def __init__(self,path):
         self.path = path
         self.connection = None
@@ -16,7 +16,7 @@ class AgendaConn():
         except sqlite3.Error as e:
             print(Fore.RED,'Erro na conexão do banco: ',e,Fore.RESET)
     
-    def discnnect(self):
+    def disconnect(self):
         if self.connection:
             self.connection.close()
             print(Fore.GREEN+'Conexão encerrada com sucesso!'+Fore.RESET)
@@ -24,7 +24,7 @@ class AgendaConn():
             print(Fore.RED+'Não há conexão estabelecida!'+Fore.RESET)
 
 #*---- execute querry in .db ----*#
-class AgendaQuerry():
+class QuerryAgenda():
     def __init__(self,db_connection):
         self.db_connection = db_connection
     
@@ -53,7 +53,7 @@ class AgendaQuerry():
 
 #*---- execute test main ----*#
 # if __name__ == '__main__':
-#     db = AgendaConn('agenda.db')
+#     db = ConnectAgenda('agenda.db')
 #     db.connect()
     
 #     insertSQL = f'''INSERT INTO Contatos (nome, sobreNome, telefone, email)
