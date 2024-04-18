@@ -2,12 +2,10 @@ import sqlite3
 from colorama import Fore
 
 #*----- cennection .db -----*#
-class CoonectAgenda():
+class ConnectDB():
     def __init__(self,path):
         self.path = path
         self.connection = None
-    
-    def connect(self):
         try:
             #*---- set connection ----*#
             self.connection = sqlite3.connect(self.path)
@@ -15,6 +13,7 @@ class CoonectAgenda():
             # return self.connection
         except sqlite3.Error as e:
             print(Fore.RED,'Erro na conexão do banco: ',e,Fore.RESET)
+        self.connection.close() 
     
     def disconnect(self):
         if self.connection:
@@ -22,19 +21,15 @@ class CoonectAgenda():
             print(Fore.GREEN+'Conexão encerrada com sucesso!'+Fore.RESET)
         else:
             print(Fore.RED+'Não há conexão estabelecida!'+Fore.RESET)
-
-#*---- execute querry in .db ----*#
-class QuerryAgenda():
-    def __init__(self,db_connection):
-        self.db_connection = db_connection
-    
     #*---- create, delete and update ----*#
+    def create(self,):
+        
     def querryCUD(self, sqlQuerry):
         try:
             #*---- set cursor that go crete a pointer taht for each line in querry to add in .db ----*#
-            cursor = self.db_connection.cursor()
+            cursor = self.connection.cursor()
             cursor.execute(sqlQuerry)
-            self.db_connection.commit()
+            self.connection.commit()
         except sqlite3.Error as e:
             print(Fore.RED,'Erro na requisição do banco: ',e,Fore.RESET)
         #*---- excute anyway ----*#
@@ -50,6 +45,8 @@ class QuerryAgenda():
             return result
         except sqlite3.Error as e:
             print(Fore.RED+"Erro na busca de dados do banco: ",e,Fore.RESET)
+
+
 
 #*---- execute test main ----*#
 # if __name__ == '__main__':
