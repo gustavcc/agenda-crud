@@ -2,14 +2,9 @@ import sqlite3
 from colorama import Fore
 
 #*----- cennection .db -----*#
-<<<<<<< HEAD
 class ConnAgenda():
-=======
-class ConnectDB():
->>>>>>> 9563ffdaae6133f4af37c9b8056838dcd03f2a2b
     def __init__(self,path):
         self.connection = None
-<<<<<<< HEAD
         self.path = path
     
     def connect(self):
@@ -23,16 +18,6 @@ class ConnectDB():
                 print(Fore.RED,'Erro na conexão do banco: ',e,Fore.RESET)
         else:
             print(Fore.RED,'Esse banco de dados não existe!',Fore.RESET)
-=======
-        try:
-            #*---- set connection ----*#
-            self.connection = sqlite3.connect(self.path)
-            print(Fore.GREEN+'Conexão estabelacida com sucesso!'+Fore.RESET)
-            # return self.connection
-        except sqlite3.Error as e:
-            print(Fore.RED,'Erro na conexão do banco: ',e,Fore.RESET)
-        self.connection.close() 
->>>>>>> 9563ffdaae6133f4af37c9b8056838dcd03f2a2b
     
     def disconnect(self):
         if self.connection:
@@ -40,7 +25,6 @@ class ConnectDB():
             print(Fore.GREEN+'Conexão encerrada com sucesso!'+Fore.RESET)
         else:
             print(Fore.RED+'Não há conexão estabelecida!'+Fore.RESET)
-<<<<<<< HEAD
     
     def criarTabela(self):
         try: 
@@ -55,17 +39,6 @@ class ConnectDB():
             self.cursor.execute(querry)
             print(Fore.GREEN+'\nTabela criada!\n'+Fore.RESET)
             self.disconnect()
-=======
-    #*---- create, delete and update ----*#
-    def create(self,):
-        
-    def querryCUD(self, sqlQuerry):
-        try:
-            #*---- set cursor that go crete a pointer taht for each line in querry to add in .db ----*#
-            cursor = self.connection.cursor()
-            cursor.execute(sqlQuerry)
-            self.connection.commit()
->>>>>>> 9563ffdaae6133f4af37c9b8056838dcd03f2a2b
         except sqlite3.Error as e:
             print(Fore.RED,'Erro ao criar tabela: ',e,Fore.RESET)
     
@@ -114,28 +87,8 @@ class ConnectDB():
         except sqlite3.Error as e:
             print(Fore.RED,'Erro ao editar registro: ',e,Fore.RESET)
 
-
-
 #*---- execute test main ----*#
-<<<<<<< HEAD
 if __name__ == '__main__':
     db = ConnAgenda('agenda.db')
     db.criarTabela()
     db.excluirContato(2)
-=======
-# if __name__ == '__main__':
-#     db = ConnectAgenda('agenda.db')
-#     db.connect()
-    
-#     insertSQL = f'''INSERT INTO Contatos (nome, sobreNome, telefone, email)
-#                     VALUES ('Gustavo', 'Cardoso', '(77)98650782', 'gustavo@email.com')'''
-    
-#     deleteSQL = f'''DELETE FROM Contatos WHERE id > 0'''
-
-#     updateSQL = f'''UPDATE Contatos SET nome='Maria', email='maria@email.com' WHERE id=6'''
-
-#     querry = AgendaQuerry(db.connection)
-#     querry.querryCUD(updateSQL)
-
-#     db.discnnect()
->>>>>>> 9563ffdaae6133f4af37c9b8056838dcd03f2a2b
