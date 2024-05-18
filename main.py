@@ -61,6 +61,7 @@ class Agenda():
         self.e_telefone = Entry(self.frame_baixo, width=45, justify='left', relief='solid')
         self.e_telefone.place(x=15, y=190)
         
+        #!!!!!!!!!!!1 erro aquuuuuui
         
         #*----- botões -----*#
         b_inserir = Button(self.frame_baixo, text='Inserir', width=10, anchor=CENTER, fg=color1, bg=color2, relief='raised', overrelief='ridge', font='Ive 10 bold', command=self.mostrar())
