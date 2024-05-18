@@ -1,23 +1,18 @@
 import sqlite3
 from colorama import Fore
 
-#*----- cennection .db -----*#
-class ConnAgenda():
+class AgendaDB():
     def __init__(self,path):
         self.connection = None
         self.path = path
     
     def connect(self):
-        # while (not '.db' in self.path):
-        if '.db' in self.path:
-            try:
-                self.connection = sqlite3.connect(self.path)
-                print(Fore.GREEN+'Conexão estabelacida com sucesso!'+Fore.RESET)
-                self.cursor = self.connection.cursor()
-            except sqlite3.Error as e:
-                print(Fore.RED,'Erro na conexão do banco: ',e,Fore.RESET)
-        else:
-            print(Fore.RED,'Esse banco de dados não existe!',Fore.RESET)
+        try:
+            self.connection = sqlite3.connect(self.path)
+            print(Fore.GREEN+'Conexão estabelacida com sucesso!'+Fore.RESET)
+            self.cursor = self.connection.cursor()
+        except sqlite3.Error as e:
+            print(Fore.RED,'Erro na conexão do banco: ',e,Fore.RESET)
     
     def disconnect(self):
         if self.connection:
@@ -26,7 +21,7 @@ class ConnAgenda():
         else:
             print(Fore.RED+'Não há conexão estabelecida!'+Fore.RESET)
     
-    def criarTabela(self):
+    def criarTabelaDB(self):
         try: 
             self.connect()
             querry = f'''CREATE TABLE IF NOT EXISTS Contatos (
@@ -38,57 +33,91 @@ class ConnAgenda():
             );'''
             self.cursor.execute(querry)
             print(Fore.GREEN+'\nTabela criada!\n'+Fore.RESET)
-            self.disconnect()
         except sqlite3.Error as e:
             print(Fore.RED,'Erro ao criar tabela: ',e,Fore.RESET)
+        finally:
+            self.disconnect()
     
-    def inserirContato(self, nome,sobreNome,telefone,email):
+    def inserirContatoDB(self, lista):
         try:
             self.connect()
             querry = '''INSERT INTO Contatos (nome, sobreNome, telefone, email)
                             VALUES (?,?,?,?);'''
-            self.cursor.execute(querry,(nome,sobreNome,telefone,email))
+            self.cursor.execute(querry,(lista))
             self.connection.commit()
             print(Fore.GREEN+'\nContato inserido!\n'+Fore.RESET)
-            self.disconnect()
         except sqlite3.Error as e:
-            print(Fore.RED,'Erro ao inserir registro: ',e,Fore.RESET)
+            print(Fore.RED,'Erro ao inserir registro!!!!: ',e,Fore.RESET)
+        finally:
+            self.disconnect()
         
-    def editarContato(self, id,nome,sobreNome,telefone,email):
+    def editarContatoDB(self, id,nome,sobreNome,telefone,email):
         try:
             self.connect()
             querry = '''UPDATE Contatos SET nome=?,sobreNome=?,telefone=?,email=? WHERE id=?;'''
             self.cursor.execute(querry,(nome,sobreNome,telefone,email,id))
             self.connection.commit()
             print(Fore.GREEN+'\nContato editado!\n'+Fore.RESET)
-            self.disconnect()
         except sqlite3.Error as e:
             print(Fore.RED,'Erro ao editar registro: ',e,Fore.RESET)
-            
-    def excluirContato(self,id):
+        finally:
+            self.disconnect()
+    
+    def excluirContatoDB(self,id):
         try:
             self.connect()
             querry = '''DELETE FROM Contatos WHERE id=?;'''
             self.cursor.execute(querry,(id,))
             self.connection.commit()
             print(Fore.GREEN+'\nContato excluido!\n'+Fore.RESET)
-            self.disconnect()
         except sqlite3.Error as e:
-            print(Fore.RED,'Erro ao editar registro: ',e,Fore.RESET)
-    def mostrarContatos(self):
+            print(Fore.RED,'Erro ao excluir registro: ',e,Fore.RESET)
+        finally:
+            self.disconnect()
+    
+    def mostrarContatosDB(self):
+        listaContatos = []
         try:
             self.connect()
             querry = '''SELECT * FROM Contatos;'''
             self.cursor.execute(querry)
             contatos = self.cursor.fetchall()
             for contato in contatos:
-                print(contato)
-            self.disconnect()
+                listaContatos.append(contato)
+            return listaContatos
         except sqlite3.Error as e:
-            print(Fore.RED,'Erro ao editar registro: ',e,Fore.RESET)
+            print(Fore.RED,'Erro ao mostrar registro: ',e,Fore.RESET)
+        finally:
+            self.disconnect()
+    
+    def selectContatoDB(self,id):
+        try:
+            self.connect()
+            querry = '''SELECT * FROM Contatos WHERE id=?;'''
+            self.cursor.execute(querry,(id,))
+            contato = self.cursor.fetchall()
+            return contato[0]
+        except sqlite3.Error as e:
+            print(Fore.RED,'Erro ao selecionar registro: ',e,Fore.RESET)
+        finally:
+            self.disconnect()
+    
+    def existeContatoDB(self,id):
+        try:
+            self.connect()
+            querry = '''SELECT * FROM Contatos;'''
+            self.cursor.execute(querry)
+            contatos = self.cursor.fetchall()
+            existe = False
+            for cont in contatos:
+                if id == cont[0]:
+                    existe = True
+            return existe
+        except sqlite3.Error as e:
+            print(Fore.RED,'\nNão existe contatos: ',e,Fore.RESET)
+        finally:
+            self.disconnect()
 
-#*---- execute test main ----*#
-if __name__ == '__main__':
-    db = ConnAgenda('agenda.db')
-    db.criarTabela()
-    db.excluirContato(2)
+# if __name__ == '__main__':
+#     db = AgendaDB('agenda.db')
+#     db.inserirContatoDB(['Rita','Pereira','999999999','rita@email.com'])

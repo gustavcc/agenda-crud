@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from db import AgendaDB
 
 #*----- cores -----*#
 color0 = "#f0f3f5"  # Preta
@@ -22,66 +23,82 @@ main.configure(background=color9)
 main.resizable(width=FALSE, height=FALSE)
 
 class Agenda():
+    banco = AgendaDB('agenda.db')
+    
     def __init__(self, main):
         
         #*----- frames -----*#
-        frame_cima = Frame(main, width=310, height=50, bg=color10)
-        frame_cima.grid(row=0, column=0)
+        self.frame_cima = Frame(main, width=310, height=50, bg=color6)
+        self.frame_cima.grid(row=0, column=0)
         
-        frame_baixo = Frame(main, width=310, height=420, bg=color1)
-        frame_baixo.grid(row=1, column=0, padx=0, pady=1, sticky=NSEW)
+        self.frame_baixo = Frame(main, width=310, height=420, bg=color1)
+        self.frame_baixo.grid(row=1, column=0, padx=0, pady=1, sticky=NSEW)
         
-        frame_direita = Frame(main, width=760, height=470, bg=color1)
-        frame_direita.grid(row=0, column=1, pady=1, padx=1, rowspan=2, sticky=NSEW)
+        self.frame_direita = Frame(main, width=760, height=470, bg=color1)
+        self.frame_direita.grid(row=0, column=1, pady=1, padx=1, rowspan=2, sticky=NSEW)
         
         #*----- textos e inputs -----*#
-        app_title = Label(frame_cima, text='Agenda de Contatos', anchor=NW, fg=color1, bg=color10, relief='flat', font='Ive 15 bold')
-        app_title.place(x=10, y=10)
+        self.app_title = Label(self.frame_cima, text='Agenda de Contatos', anchor=NW, fg=color1, bg=color6, relief='flat', font='Ive 15 bold')
+        self.app_title.place(x=10, y=10)
         
-        l_nome = Label(frame_baixo, text='Nome*', anchor=NW, fg=color4, bg=color1, relief='flat', font='Ive 12 bold')
-        l_nome.place(x=10, y=10)
-        e_nome = Entry(frame_baixo, width=45, justify='left', relief='solid')
-        e_nome.place(x=15, y=40)
+        self.l_nome = Label(self.frame_baixo, text='Nome*', anchor=NW, fg=color4, bg=color1, relief='flat', font='Ive 12 bold')
+        self.l_nome.place(x=10, y=10)
+        self.e_nome = Entry(self.frame_baixo, width=45, justify='left', relief='solid')
+        self.e_nome.place(x=15, y=40)
         
-        l_sobreNome = Label(frame_baixo, text='Sobre Nome*', anchor=NW, fg=color4, bg=color1, relief='flat', font='Ive 12 bold')
-        l_sobreNome.place(x=10, y=60)
-        e_sobreNome = Entry(frame_baixo, width=45, justify='left', relief='solid')
-        e_sobreNome.place(x=15, y=90)
+        self.l_sobreNome = Label(self.frame_baixo, text='Sobre Nome*', anchor=NW, fg=color4, bg=color1, relief='flat', font='Ive 12 bold')
+        self.l_sobreNome.place(x=10, y=60)
+        self.e_sobreNome = Entry(self.frame_baixo, width=45, justify='left', relief='solid')
+        self.e_sobreNome.place(x=15, y=90)
         
-        l_email = Label(frame_baixo, text='Email*', anchor=NW, fg=color4, bg=color1, relief='flat', font='Ive 12 bold')
-        l_email.place(x=10, y=110)
-        e_email = Entry(frame_baixo, width=45, justify='left', relief='solid')
-        e_email.place(x=15, y=140)
+        self.l_email = Label(self.frame_baixo, text='Email*', anchor=NW, fg=color4, bg=color1, relief='flat', font='Ive 12 bold')
+        self.l_email.place(x=10, y=110)
+        self.e_email = Entry(self.frame_baixo, width=45, justify='left', relief='solid')
+        self.e_email.place(x=15, y=140)
         
-        l_telefone = Label(frame_baixo, text='Telefone*', anchor=NW, fg=color4, bg=color1, relief='flat', font='Ive 12 bold')
-        l_telefone.place(x=10, y=160)
-        e_telefone = Entry(frame_baixo, width=45, justify='left', relief='solid')
-        e_telefone.place(x=15, y=190)
+        self.l_telefone = Label(self.frame_baixo, text='Telefone*', anchor=NW, fg=color4, bg=color1, relief='flat', font='Ive 12 bold')
+        self.l_telefone.place(x=10, y=160)
+        self.e_telefone = Entry(self.frame_baixo, width=45, justify='left', relief='solid')
+        self.e_telefone.place(x=15, y=190)
+        
         
         #*----- botões -----*#
-        b_inserir = Button(frame_baixo, text='Inserir', width=10, anchor=CENTER, fg=color1, bg=color2, relief='raised', overrelief='ridge', font='Ive 10 bold')
+        b_inserir = Button(self.frame_baixo, text='Inserir', width=10, anchor=CENTER, fg=color1, bg=color2, relief='raised', overrelief='ridge', font='Ive 10 bold', command=self.mostrar())
         b_inserir.place(x=15, y=370)
         
-        b_editar = Button(frame_baixo, text='Editar', width=10, anchor=CENTER, fg=color1, bg=color6, relief='raised', overrelief='ridge', font='Ive 10 bold')
+        b_editar = Button(self.frame_baixo, text='Editar', width=10, anchor=CENTER, fg=color1, bg=color6, relief='raised', overrelief='ridge', font='Ive 10 bold')
         b_editar.place(x=110, y=370)
         
-        b_excluir = Button(frame_baixo, text='Excluir', width=10, anchor=CENTER, fg=color1, bg=color7, relief='raised', overrelief='ridge', font='Ive 10 bold')
+        b_excluir = Button(self.frame_baixo, text='Excluir', width=10, anchor=CENTER, fg=color1, bg=color7, relief='raised', overrelief='ridge', font='Ive 10 bold')
         b_excluir.place(x=205, y=370)
-        
-        #*----- frame direita / TreeView -----*#
-        contatos = [[1,'João', 'da Silva', 'joao@email.com', 123456789],
-                    [2,'João', 'da Silva', 'joao@email.com', 123456789],
-                    [3,'João', 'da Silva', 'joao@email.com', 123456789],]
+    
+    def mostrar(self):
+        print('Olaaaaa')
+    
+    def inserirContato(self):
+        contatoInsert = [self.e_nome.get(),self.e_sobreNome.get(),self.e_telefone.get(),self.e_email.get()]
+        self.banco.inserirContatoDB(contatoInsert)
+        self.e_nome.delete(0, "end")
+        self.e_sobreNome.delete(0, "end")
+        self.e_email.delete(0, "end")
+        self.e_telefone.delete(0, "end")
+    
+    def verificarEntrys(self):
+        pass
+    
+    #*----- frame direita / TreeView -----*#
+    def mostrarContatos(self):
+        listaContatos = self.banco.mostrarContatosDB()
 
         # lista cabeçalho
         tabela_header = ['ID', 'Nome', 'Sobre Nome', 'Email', 'Telefone']
         
         # criando a tabela
-        treeview = ttk.Treeview(frame_direita, selectmode='extended', columns=tabela_header, show='headings')
+        treeview = ttk.Treeview(self.frame_direita, selectmode='extended', columns=tabela_header, show='headings')
         # criando o scroll lateral
-        yscroll = ttk.Scrollbar(frame_direita, orient='vertical', command=treeview.yview)
+        yscroll = ttk.Scrollbar(self.frame_direita, orient='vertical', command=treeview.yview)
         # criando o scroll de baixo
-        xscroll = ttk.Scrollbar(frame_direita, orient='horizontal', command=treeview.xview)
+        xscroll = ttk.Scrollbar(self.frame_direita, orient='horizontal', command=treeview.xview)
         
         # aplicando os scrolls
         treeview.configure(yscrollcommand=yscroll.set, xscrollcommand=xscroll.set)
@@ -93,23 +110,26 @@ class Agenda():
         # scroll da horizontal
         xscroll.grid(column=0, row=1, sticky='ew')
         
-        frame_direita.grid_rowconfigure(0, weight=12)
+        self.frame_direita.grid_rowconfigure(0, weight=12)
         
         # configurando header e posição do texto dentro (nort-west (norte e oeste))
         header = ['nw','nw','nw','nw','nw']
-        w = [30,170,170,170,170]
+        w = [50,170,170,190,170]
         n=0
         
-        # loop para ajustar a tabela, junto com o cabeçalho e e o tamalho de cada coluna 
+        # loop para ajustar a tabela, junto com o cabeçalho e o tamanho de cada coluna 
         for col in tabela_header:
             treeview.heading(col, text=col.title(), anchor=CENTER)
             treeview.column(col, width=w[n], anchor=header[n])
             n+=1
         
         # pega os contatos da lista e adiciona na tabela / TreeView
-        for contato in contatos:
+        for contato in listaContatos:
             treeview.insert('', 'end', values=contato)
+    
+
 
 agenda = Agenda(main)
+agenda.mostrarContatos()
 
 main.mainloop()
