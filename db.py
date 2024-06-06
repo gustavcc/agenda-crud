@@ -47,7 +47,7 @@ class AgendaDB():
             self.connection.commit()
             print(Fore.GREEN+'\nContato inserido!\n'+Fore.RESET)
         except sqlite3.Error as e:
-            print(Fore.RED,'Erro ao inserir registro!!!!: ',e,Fore.RESET)
+            print(Fore.RED,'Erro ao inserir contato: ',e,Fore.RESET)
         finally:
             self.disconnect()
         
@@ -59,7 +59,7 @@ class AgendaDB():
             self.connection.commit()
             print(Fore.GREEN+'\nContato editado!\n'+Fore.RESET)
         except sqlite3.Error as e:
-            print(Fore.RED,'Erro ao editar registro: ',e,Fore.RESET)
+            print(Fore.RED,'Erro ao editar contato: ',e,Fore.RESET)
         finally:
             self.disconnect()
     
@@ -71,7 +71,7 @@ class AgendaDB():
             self.connection.commit()
             print(Fore.GREEN+'\nContato excluido!\n'+Fore.RESET)
         except sqlite3.Error as e:
-            print(Fore.RED,'Erro ao excluir registro: ',e,Fore.RESET)
+            print(Fore.RED,'Erro ao excluir contato: ',e,Fore.RESET)
         finally:
             self.disconnect()
     
@@ -86,7 +86,7 @@ class AgendaDB():
                 listaContatos.append(contato)
             return listaContatos
         except sqlite3.Error as e:
-            print(Fore.RED,'Erro ao mostrar registro: ',e,Fore.RESET)
+            print(Fore.RED,'Erro ao mostrar contatos: ',e,Fore.RESET)
         finally:
             self.disconnect()
     
@@ -98,7 +98,7 @@ class AgendaDB():
             contato = self.cursor.fetchall()
             return contato[0]
         except sqlite3.Error as e:
-            print(Fore.RED,'Erro ao selecionar registro: ',e,Fore.RESET)
+            print(Fore.RED,'Erro ao selecionar contato: ',e,Fore.RESET)
         finally:
             self.disconnect()
     

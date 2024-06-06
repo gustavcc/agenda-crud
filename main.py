@@ -1,6 +1,8 @@
 from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from db import AgendaDB
+from contatos import Contatos
 
 #*----- cores -----*#
 color0 = "#f0f3f5"  # Preta
@@ -23,7 +25,8 @@ main.configure(background=color9)
 main.resizable(width=FALSE, height=FALSE)
 
 class Agenda():
-    banco = AgendaDB('agenda.db')
+    
+    banco = AgendaDB('agenda.sqlite')
     
     def __init__(self, main):
         
@@ -61,38 +64,70 @@ class Agenda():
         self.e_telefone = Entry(self.frame_baixo, width=45, justify='left', relief='solid')
         self.e_telefone.place(x=15, y=190)
         
-        #!!!!!!!!!!!1 erro aquuuuuui
-        
         #*----- botões -----*#
-        b_inserir = Button(self.frame_baixo, text='Inserir', width=10, anchor=CENTER, fg=color1, bg=color2, relief='raised', overrelief='ridge', font='Ive 10 bold', command=self.mostrar())
-        b_inserir.place(x=15, y=370)
+        self.b_inserir = Button(self.frame_baixo, text='Inserir', width=10, anchor=CENTER, fg=color1, bg=color2, relief='raised', overrelief='ridge', font='Ive 10 bold', command = self.inserirContato)
+        self.b_inserir.place(x=15, y=370)
         
-        b_editar = Button(self.frame_baixo, text='Editar', width=10, anchor=CENTER, fg=color1, bg=color6, relief='raised', overrelief='ridge', font='Ive 10 bold')
-        b_editar.place(x=110, y=370)
+        self.b_editar = Button(self.frame_baixo, text='Editar', width=10, anchor=CENTER, fg=color1, bg=color6, relief='raised', overrelief='ridge', font='Ive 10 bold', command = self.editarContato)
+        self.b_editar.place(x=110, y=370)
         
-        b_excluir = Button(self.frame_baixo, text='Excluir', width=10, anchor=CENTER, fg=color1, bg=color7, relief='raised', overrelief='ridge', font='Ive 10 bold')
-        b_excluir.place(x=205, y=370)
-    
-    def mostrar(self):
-        print('Olaaaaa')
+        self.b_excluir = Button(self.frame_baixo, text='Excluir', width=10, anchor=CENTER, fg=color1, bg=color7, relief='raised', overrelief='ridge', font='Ive 10 bold', command = self.excluirContato)
+        self.b_excluir.place(x=205, y=370)
     
     def inserirContato(self):
-        contatoInsert = [self.e_nome.get(),self.e_sobreNome.get(),self.e_telefone.get(),self.e_email.get()]
-        self.banco.inserirContatoDB(contatoInsert)
-        self.e_nome.delete(0, "end")
-        self.e_sobreNome.delete(0, "end")
-        self.e_email.delete(0, "end")
-        self.e_telefone.delete(0, "end")
+        if self.verificarEntrys():
+            contatoInsert = [self.e_nome.get(),self.e_sobreNome.get(),self.e_telefone.get(),self.e_email.get()]
+            self.banco.inserirContatoDB(contatoInsert)
+            
+            # print('Nome: ', self.e_nome.get(), '\nSobre Nome: ', self.e_sobreNome.get(), '\nTelefone: ', self.e_telefone.get(), '\nEmail: ', self.e_email.get())
+            
+            cadastro = tk.Tk()
+            cadastro.title('Cadastro')
+            aviso = Label(cadastro, text="Contato cadastrado com sucesso!", foreground='green')
+            aviso.grid(row=0, column=0, padx=20, pady=20)
+            
+            self.e_nome.delete(0, "end")
+            self.e_sobreNome.delete(0, "end")
+            self.e_email.delete(0, "end")
+            self.e_telefone.delete(0, "end")
+            
+            self.mostrarContatos()
+    
+    def editarContato(self):
+        pass
+    
+    def excluirContato(self):
+        pass
     
     def verificarEntrys(self):
-        pass
+        contato = Contatos(self.e_nome.get(), self.e_sobreNome.get(),self.e_telefone.get(),self.e_email.get())
+        
+        if contato.getNome() == 'Vazio' or contato.getSonbreNome() == 'Vazio' or contato.getTelefone() == 'Telefone inválido' or contato.getEmail() == 'Email inválido':
+            erro = tk.Tk()
+            erro.title('Erro')
+            
+            aviso1 = Label(erro, text='Algum campo está vazio! Preencha Todos os campos!', foreground='red')
+            aviso1.grid(row=0, column=0, padx=20, pady=20)
+            
+            if contato.getTelefone() == 'Telefone inválido': 
+                aviso3 = Label(erro, text='Telefone inválido!', foreground='red')
+                aviso3.grid(row=2, column=0, padx=20, pady=20)
+            if contato.getEmail() == 'Email inválido':
+                aviso2 = Label(erro, text='Email inválido!', foreground='red')
+                aviso2.grid(row=1, column=0, padx=20, pady=20)
+            self.e_nome.delete(0, "end")
+            self.e_sobreNome.delete(0, "end")
+            self.e_email.delete(0, "end")
+            self.e_telefone.delete(0, "end")
+            return False
+        return True
     
     #*----- frame direita / TreeView -----*#
     def mostrarContatos(self):
         listaContatos = self.banco.mostrarContatosDB()
 
         # lista cabeçalho
-        tabela_header = ['ID', 'Nome', 'Sobre Nome', 'Email', 'Telefone']
+        tabela_header = ['ID', 'Nome', 'Sobre Nome', 'Telefone', 'Email']
         
         # criando a tabela
         treeview = ttk.Treeview(self.frame_direita, selectmode='extended', columns=tabela_header, show='headings')
