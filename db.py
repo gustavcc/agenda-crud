@@ -2,13 +2,12 @@ import sqlite3
 from colorama import Fore
 
 class AgendaDB():
-    def __init__(self,path):
+    def __init__(self):
         self.connection = None
-        self.path = path
     
     def connect(self):
         try:
-            self.connection = sqlite3.connect(self.path)
+            self.connection = sqlite3.connect('agenda.sqlite')
             print(Fore.GREEN+'Conexão estabelacida com sucesso!'+Fore.RESET)
             self.cursor = self.connection.cursor()
         except sqlite3.Error as e:
@@ -102,16 +101,15 @@ class AgendaDB():
         finally:
             self.disconnect()
     
-    def existeContatoDB(self,id):
+    def existeContatoDB(self, email, telefone):
         try:
             self.connect()
-            querry = '''SELECT * FROM Contatos;'''
-            self.cursor.execute(querry)
+            querry = '''SELECT * FROM Contatos WHERE email=? OR telefone=?;'''
+            self.cursor.execute(querry, (email, telefone))
             contatos = self.cursor.fetchall()
             existe = False
-            for cont in contatos:
-                if id == cont[0]:
-                    existe = True
+            if len(contatos)>0:
+                existe = True
             return existe
         except sqlite3.Error as e:
             print(Fore.RED,'\nNão existe contatos: ',e,Fore.RESET)
@@ -119,5 +117,8 @@ class AgendaDB():
             self.disconnect()
 
 # if __name__ == '__main__':
-#     db = AgendaDB('agenda.db')
-#     db.inserirContatoDB(['Rita','Pereira','999999999','rita@email.com'])
+#     db = AgendaDB()
+#     if db.existeContatoDB('g@email.com','999999999'):
+#         print('tem')
+#     else:
+#         print('n tem')

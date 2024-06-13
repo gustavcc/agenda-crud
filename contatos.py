@@ -3,9 +3,9 @@ from colorama import Fore
 import tkinter as ttk
 from db import AgendaDB
 
-
 class Contatos():
-    banco = AgendaDB('agenda.sqlite')
+    
+    banco = AgendaDB()
     
     __slots__ = ['__nome','__sobreNome','__telefone','__email']
     
@@ -25,6 +25,7 @@ class Contatos():
         return self.__email
     
     def setNome(self, novoNome):
+        # print(Fore.BLACK, 'opa', Fore.RESET)
         if novoNome=='' or novoNome==' ' or not novoNome:
             self.__nome = 'Vazio'
         else:
@@ -38,25 +39,23 @@ class Contatos():
     
     def setTelefone(self, novoTelefone):
         try:
-            if novoTelefone=='' or not novoTelefone or novoTelefone==' ' or int(novoTelefone)<10 or self.contemCaracteresEspeciais(str(novoTelefone)) or self.contemLetras(str(novoTelefone)):
+            if novoTelefone=='' or novoTelefone==' ' or len(novoTelefone)<10 or len(novoTelefone)>11 or self.contemLetras(novoTelefone) or self.contemCaracteresEspeciais(novoTelefone):
                 self.__telefone = 'Telefone inválido'
             else:
                 self.__telefone = novoTelefone
         except ValueError: 
-            self.__telefone = 'Telefone Inválido'
+            self.__telefone = 'Telefone Inválido 111'
     
     def setEmail(self, novoEmail):
-        try:
-            if novoEmail=='' or not novoEmail or novoEmail==' ' or not '.com' in novoEmail or not '@' in novoEmail:
-                self.__email = 'Email inválido'
-            else:
-                self.__email = novoEmail
-        except ValueError: 
+        if novoEmail=='' or not novoEmail or novoEmail==' ' or not '.com' in novoEmail or not '@' in novoEmail:
             self.__email = 'Email inválido'
+        else:
+            self.__email = novoEmail
     
     def contemLetras(self, str):
-        if 'a'<= str <= 'z' or 'A'<= str <= 'Z':
-            return True
+        for letter in str:
+            if 'a'<= letter <= 'z' or 'A'<= letter <= 'Z':
+                return True
         return False
     
     def contemCaracteresEspeciais(self, str):
@@ -66,6 +65,3 @@ class Contatos():
                 return True 
                 break
         return False
-
-# ctt = Contatos('g','g','a', 'g@g.com')
-# print(ctt.getTelefone())

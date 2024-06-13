@@ -26,11 +26,11 @@ main.resizable(width=FALSE, height=FALSE)
 
 class Agenda():
     
-    banco = AgendaDB('agenda.sqlite')
+    banco = AgendaDB()
     
     def __init__(self, main):
         
-        #*----- frames -----*#
+        #*----- main frames -----*#
         self.frame_cima = Frame(main, width=310, height=50, bg=color6)
         self.frame_cima.grid(row=0, column=0)
         
@@ -40,7 +40,7 @@ class Agenda():
         self.frame_direita = Frame(main, width=760, height=470, bg=color1)
         self.frame_direita.grid(row=0, column=1, pady=1, padx=1, rowspan=2, sticky=NSEW)
         
-        #*----- textos e inputs -----*#
+        #*----- labels e inputs -----*#
         self.app_title = Label(self.frame_cima, text='Agenda de Contatos', anchor=NW, fg=color1, bg=color6, relief='flat', font='Ive 15 bold')
         self.app_title.place(x=10, y=10)
         
@@ -75,11 +75,9 @@ class Agenda():
         self.b_excluir.place(x=205, y=370)
     
     def inserirContato(self):
-        if self.verificarEntrys():
+        if self.verificarEntrysInserir():
             contatoInsert = [self.e_nome.get(),self.e_sobreNome.get(),self.e_telefone.get(),self.e_email.get()]
             self.banco.inserirContatoDB(contatoInsert)
-            
-            # print('Nome: ', self.e_nome.get(), '\nSobre Nome: ', self.e_sobreNome.get(), '\nTelefone: ', self.e_telefone.get(), '\nEmail: ', self.e_email.get())
             
             cadastro = tk.Tk()
             cadastro.title('Cadastro')
@@ -99,30 +97,29 @@ class Agenda():
     def excluirContato(self):
         pass
     
-    def verificarEntrys(self):
+    def verificarEntrysInserir(self):
         contato = Contatos(self.e_nome.get(), self.e_sobreNome.get(),self.e_telefone.get(),self.e_email.get())
         
-        if contato.getNome() == 'Vazio' or contato.getSonbreNome() == 'Vazio' or contato.getTelefone() == 'Telefone inválido' or contato.getEmail() == 'Email inválido':
+        if self.banco.existeContatoDB(contato.getEmail(), contato.getTelefone()) or contato.getNome() == 'Vazio' or contato.getSonbreNome() == 'Vazio' or contato.getTelefone() == 'Telefone inválido' or contato.getEmail() == 'Email inválido':
             erro = tk.Tk()
-            erro.title('Erro')
-            
-            aviso1 = Label(erro, text='Algum campo está vazio! Preencha Todos os campos!', foreground='red')
-            aviso1.grid(row=0, column=0, padx=20, pady=20)
+            erro.title('Erro ao Inserir Contato')
+            if contato.getNome() == 'Vazio' or contato.getSonbreNome() == 'Vazio':
+                aviso1 = Label(erro, text='Algum campo está vazio! Preencha Todos os campos!', foreground='red')
+                aviso1.grid(row=0, column=0, padx=20, pady=20)
             
             if contato.getTelefone() == 'Telefone inválido': 
                 aviso3 = Label(erro, text='Telefone inválido!', foreground='red')
-                aviso3.grid(row=2, column=0, padx=20, pady=20)
+                aviso3.grid(row=2, column=0, padx=100, pady=20)
             if contato.getEmail() == 'Email inválido':
                 aviso2 = Label(erro, text='Email inválido!', foreground='red')
-                aviso2.grid(row=1, column=0, padx=20, pady=20)
-            self.e_nome.delete(0, "end")
-            self.e_sobreNome.delete(0, "end")
-            self.e_email.delete(0, "end")
-            self.e_telefone.delete(0, "end")
+                aviso2.grid(row=1, column=0, padx=100, pady=20)
+            if self.banco.existeContatoDB(contato.getEmail(), contato.getTelefone()):
+                aviso4 = Label(erro, text='Email ou telefone já existe!', foreground='red')
+                aviso4.grid(row=3, column=0, padx=70, pady=20)
             return False
         return True
     
-    #*----- frame direita / TreeView -----*#
+    #*----- frame direita / TreeView / lista de contatos-----*#
     def mostrarContatos(self):
         listaContatos = self.banco.mostrarContatosDB()
 
@@ -163,9 +160,6 @@ class Agenda():
         for contato in listaContatos:
             treeview.insert('', 'end', values=contato)
     
-
-
 agenda = Agenda(main)
 agenda.mostrarContatos()
-
 main.mainloop()
