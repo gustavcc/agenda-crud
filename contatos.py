@@ -2,7 +2,7 @@ import os
 from colorama import Fore
 import tkinter as ttk
 from db import AgendaDB
-#teste
+
 
 class Contatos():
     
